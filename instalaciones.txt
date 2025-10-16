@@ -1,0 +1,55 @@
+instalaciones
+
+
+## Actualización v2. 2025 octubre 16
+
+# Core data stack
+pandas
+numpy
+
+# Database connectivity
+pyodbc
+SQLAlchemy
+
+# Notebooks (if you use Jupyter)
+jupyter
+
+# Optional: plots for quick EDA
+matplotlib
+
+
+
+## 1ra versión
+
+visual 
+
+ruta de almacenamiento
+
+C:\Users\Administrador\AppData\Local\Programs\Microsoft VS Code
+
+Carpeta de Destino:
+      C:\Users\Administrador\AppData\Local\Programs\Microsoft VS Code
+
+Carpeta del Menú Inicio:
+      Visual Studio Code
+
+Tareas Adicionales:
+      Otros:
+         Registrar Code como editor para tipos de archivo admitidos
+         Agregar a PATH (disponible después de reiniciar)
+
+C:\Users\Administrador\AppData\Local\Programs\Python\Python312\python.exe
+
+Permitir ejecutar archivos .ps1 solo en esa sesión 
+
+Set-ExecutionPolicy -Scope Process -ExecutionPolicy RemoteSigned
+dataB\Scripts\activate
+
+instalación paquetes 
+
+pip install pyodbc pandas sqlalchemy
+
+
+se va a instalar drivers actualizados para poder ejecutar la conexión 
+
+drivers actuales ODBC Driver 13 for SQL Server, bastante viejo, se instalará drivers 18

@@ -1,0 +1,69 @@
+# data
+# === Datos y exportaciones ===
+*.csv
+*.xls
+*.xlsx
+*.zip
+
+# === Imágenes y reportes ===
+*.png
+*.svg
+
+# === Archivos de entorno y notebook pesados ===
+*.ipynb_checkpoints/
+*.ipynb
+
+# === Carpetas locales del proyecto ===
+20251003/
+anteriores/
+Files/
+
+
+# --- Python & Jupyter ---
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+.ipynb_checkpoints/
+.pytest_cache/
+.mypy_cache/
+.cache/
+*.egg-info/
+
+# --- Virtual envs ---
+.venv/
+venv/
+env/
+ENV/
+
+# --- Editors / OS ---
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# --- Logs & temp ---
+*.log
+*.tmp
+*.bak
+
+# --- Secrets / local config ---
+.env
+.env.*
+*.key
+*.pem
+
+# --- Data (keep raw data out of git) ---
+data/**
+!data/README.md
+
+# --- Outputs ---
+outputs/**
+reports/**
+figures/**
+artifacts/**
+
+# --- Notebooks (optional large) ---
+# Uncomment to ignore large notebooks produced during EDA
+# *.ipynb
