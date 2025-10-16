@@ -11,7 +11,7 @@
 
 # === Archivos de entorno y notebook pesados ===
 *.ipynb_checkpoints/
-*.ipynb
+
 
 # === Carpetas locales del proyecto ===
 20251003/
