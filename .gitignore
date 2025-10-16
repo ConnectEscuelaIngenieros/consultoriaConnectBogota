@@ -6,8 +6,8 @@
 *.zip
 
 # === Imágenes y reportes ===
-*.png
-*.svg
+#*.png
+#*.svg
 
 # === Archivos de entorno y notebook pesados ===
 *.ipynb_checkpoints/
