@@ -90,6 +90,26 @@ Principales librerías:
 
 ---
 
+## 📓 Notebooks principales
+
+### `Codigo Tabla final.ipynb`
+Notebook principal para la construcción de la tabla final consolidada. Realiza:
+- Carga de datos desde los CSV en `20251003/` (Proyección, Items, Proyecto, Capítulo Presupuesto, Insumo)
+- Merges secuenciales mediante llaves (`SkIdProyecto`, `SkIdCapitulo`, `SkIdItems`, `SkIdInsumo`)
+- Limpieza de duplicados y prefijado de columnas para evitar colisiones
+- Selección de columnas relevantes para análisis
+- Exportación de resultados a `tabla_looker.csv` y `tabla_looker_final.csv`
+- **Exportación por proyecto**: genera un CSV individual por cada "Nombre Proyecto" en la carpeta `tablasProyect/`, con nombres de archivo saneados (sin acentos, espacios o caracteres especiales)
+
+### `consultas.ipynb`
+Notebook de consultas exploratorias y análisis ad-hoc sobre la base de datos ARPRO. Incluye:
+- Consultas SQL directas (si se conecta a la base)
+- Exploraciones de datos (EDA) sobre los CSV exportados
+- Cálculos de métricas, conteos y agregaciones
+- Prototipos de análisis que luego se integran en el flujo principal
+
+---
+
 ## 🧹 Política de exclusión (.gitignore)
 
 El archivo `.gitignore` excluye:
