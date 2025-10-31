@@ -44,6 +44,10 @@ Base de Datos ARPRO/
 📚 Ingeniería Estadística — Escuela Colombiana de Ingeniería  
 🧩 Proyecto 2025: *Estructura relacional de bases ARPRO*
 
+**Diana Catalina Hernandez Rojas**  
+📚 Ingeniería Estadística — Escuela Colombiana de Ingeniería  
+🧩 Proyecto 2025: *Estructura relacional de bases ARPRO*
+
 ---
 
 ## 🗄️ Archivos de datos (excluidos del repositorio)
@@ -239,7 +243,14 @@ Codigos de yan.
 - Usar `.env` para credenciales o cadenas de conexión
 - Asegurar que cada notebook sea reproducible
 
+---
 
+### TABLERO EN LOOKER
+
+El tablero en looker en su versión inicial estaba compacto todo en una única pestaña, se evidenció que esto no era óptimo y se desarrollo una versión 2.0 con nuevas pestañas y de una vez se dejo el espacio para la pestaña de regresión. A este tablero falta hacer unos análisis previos de los datos que alimentan el tablero.
+
+V 0.1: https://lookerstudio.google.com/reporting/350a485d-72e9-49f9-9829-c16847ad895b
+V 0.2: https://lookerstudio.google.com/reporting/b86b2ce7-7553-4816-b3bf-11f9ea4a7c14
 
 ---
 
