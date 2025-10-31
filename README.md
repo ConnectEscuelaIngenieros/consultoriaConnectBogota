@@ -7,16 +7,29 @@ Este repositorio contiene los scripts, conexiones y notebooks utilizados para an
 ## 📂 Estructura del proyecto
 
 ```
+
 Base de Datos ARPRO/
 │
-├── 20251003/              # Último respaldo de datos (CSV, XLS, XLSX)
-├── anteriores/            # Versiones anteriores de la base de datos
-├── scripts/               # Scripts de Python y Jupyter
-├── outputs/               # Reportes o resultados procesados
-├── .venv/                 # Entorno virtual local (ignorado por Git)
-├── requirements.txt       # Dependencias de Python
-├── setup.ps1              # Instalador automático para Windows
-└── README.md
+├── CODIGOS_YAN/                     # Scripts de Yan para procesamiento o integración
+│
+├── Codigo Tabla final.ipynb         # Notebook principal para generación de tablas del dashboard
+├── conexionDB.ipynb                 # Conexión a la base de datos (versión notebook)
+├── conexionDB.py                    # Conexión a la base de datos (versión script Python)
+├── consultas.ipynb                  # Análisis de tasas de valores nulos y consultas exploratorias
+│
+├── Modelo APPY SINCO-2025-10-16-160041.svg   # Diagrama SVG del modelo APPY SINCO
+├── Modelo APPY SINCO-2025-10-16-169000.png   # Imagen PNG del modelo APPY SINCO
+│
+├── instalaciones.txt                # Guía de instalación de dependencias o librerías locales
+├── requirements.txt                 # Dependencias principales del proyecto
+├── requirements_PC_ARPRO.txt        # Dependencias específicas del entorno PC_ARPRO
+│
+├── tableDescriptions.csv            # Descripciones y metadatos de las tablas de la base de datos
+│
+├── .gitattributes                   # Configuración de atributos de Git (normalización de EOL, etc.)
+├── .gitignore                       # Archivos y carpetas ignoradas por Git (como .venv, __pycache__, etc.)
+│
+└── README.md                        # Documentación principal del proyecto (actualizada)
 ```
 
 ---
@@ -27,7 +40,7 @@ Base de Datos ARPRO/
 📚 Ingeniería Estadística — Escuela Colombiana de Ingeniería  
 🧩 Proyecto 2025: *Estructura relacional de bases ARPRO*
 
-**Juan Seabastián Ramírez Ayala**  
+**Juan Sebastián Ramírez Ayala**  
 📚 Ingeniería Estadística — Escuela Colombiana de Ingeniería  
 🧩 Proyecto 2025: *Estructura relacional de bases ARPRO*
 
