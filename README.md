@@ -7,36 +7,46 @@ Este repositorio contiene los scripts, conexiones y notebooks utilizados para an
 ## 📂 Estructura del proyecto
 
 ```
+
 Base de Datos ARPRO/
 │
-├── 20251003/              # Último respaldo de datos (CSV, XLS, XLSX)
-├── anteriores/            # Versiones anteriores de la base de datos
-├── scripts/               # Scripts de Python y Jupyter
-├── outputs/               # Reportes o resultados procesados
-├── .venv/                 # Entorno virtual local (ignorado por Git)
-├── requirements.txt       # Dependencias de Python
-├── setup.ps1              # Instalador automático para Windows
-└── README.md
+├── CODIGOS_YAN/                     # Scripts de Yan para procesamiento o integración
+│
+├── Codigo Tabla final.ipynb         # Notebook principal para generación de tablas del dashboard
+├── conexionDB.ipynb                 # Conexión a la base de datos (versión notebook)
+├── conexionDB.py                    # Conexión a la base de datos (versión script Python)
+├── consultas.ipynb                  # Análisis de tasas de valores nulos y consultas exploratorias
+│
+├── Modelo APPY SINCO-2025-10-16-160041.svg   # Diagrama SVG del modelo APPY SINCO
+├── Modelo APPY SINCO-2025-10-16-169000.png   # Imagen PNG del modelo APPY SINCO
+│
+├── instalaciones.txt                # Guía de instalación de dependencias o librerías locales
+├── requirements.txt                 # Dependencias principales del proyecto
+├── requirements_PC_ARPRO.txt        # Dependencias específicas del entorno PC_ARPRO
+│
+├── tableDescriptions.csv            # Descripciones y metadatos de las tablas de la base de datos
+│
+├── .gitattributes                   # Configuración de atributos de Git (normalización de EOL, etc.)
+├── .gitignore                       # Archivos y carpetas ignoradas por Git (como .venv, __pycache__, etc.)
+│
+└── README.md                        # Documentación principal del proyecto (actualizada)
 ```
 
 ---
 
-## 🧰 Instalación y configuración (Windows)
+## 👤 Autores
 
-### 1️⃣ Permitir ejecución de scripts en PowerShell
-```powershell
-Set-ExecutionPolicy -Scope Process -ExecutionPolicy RemoteSigned
-```
+**Rafael A. Baracaldo D.**  
+📚 Ingeniería Estadística — Escuela Colombiana de Ingeniería  
+🧩 Proyecto 2025: *Estructura relacional de bases ARPRO*
 
-### 2️⃣ Ejecutar el instalador
-```powershell
-.\setup.ps1
-```
+**Juan Sebastián Ramírez Ayala**  
+📚 Ingeniería Estadística — Escuela Colombiana de Ingeniería  
+🧩 Proyecto 2025: *Estructura relacional de bases ARPRO*
 
-Este script:
-- Crea un entorno virtual `.venv`
-- Instala dependencias desde `requirements.txt`
-- Verifica la presencia del **ODBC Driver 18** para SQL Server
+**Diana Catalina Hernandez Rojas**  
+📚 Ingeniería Estadística — Escuela Colombiana de Ingeniería  
+🧩 Proyecto 2025: *Estructura relacional de bases ARPRO*
 
 ---
 
@@ -44,19 +54,14 @@ Este script:
 
 Los datos originales de ARPRO **no se versionan en GitHub** por su tamaño y confidencialidad.
 
-Ruta local de ejemplo:
+---
 
-```
-C:\Users\aleja\Documents\Ingenieria Estadistica\
-Asignaturas2025B\arpro1\Base de Datos ARPRO\20251003\
-```
+## 🧹 Política de exclusión (.gitignore)
 
-Archivos principales:
-- `ADP_DTM_DIM.Items.csv`
-- `ADP_DTM_FACT.Proyeccion.csv`
-- `ADP_DTM_DIM.Proyecto.csv`
-- `ADP_DTM_DIM.Insumo.csv`
-- `ADP_DTM_FACT.Acta.csv`
+El archivo `.gitignore` excluye:
+- Todos los `.csv`, `.xls`, `.xlsx`, `.zip`
+- Carpetas locales (`20251003/`, `anteriores/`)
+- Notebooks pesados, logs y archivos temporales
 
 ---
 
@@ -68,7 +73,21 @@ Archivos principales:
 4. Generar **matrices de adyacencia e intersección**
 5. Preparar los datos para **modelado SQL o grafos**
 
+
+---
+
 ### Flujo típico en Python:
+
+Ruta local de ejemplo:
+
+```
+C:\Users\aleja\Documents\Ingenieria Estadistica\
+Asignaturas2025B\arpro1\Base de Datos ARPRO\20251003\
+```
+
+Archivos principales:
+- Tablas dimensión `ADP_DTM_DIM`
+- Tablas dimensión `ADP_DTM_FACT`
 
 ```python
 # 1. Cargar tablas (Items, Proyección, Proyecto, Insumo)
@@ -83,21 +102,139 @@ Archivos principales:
 
 Ver [`requirements.txt`](./requirements.txt).  
 Principales librerías:
-- `pandas`, `numpy` — manejo de datos  
-- `SQLAlchemy`, `pyodbc` — conexión a bases SQL  
-- `matplotlib` — visualización opcional  
-- `jupyter` — notebooks interactivos  
+
+```bash
+pip install -r requirements.txt
+```
+
+También estan las dependencias implementadas en la extracción de datos mediante la conexión remota al PC de la empresa
+`./requirements_PC_ARPRO.txt`
+---
+
+## 📓 Notebooks principales
+
+### `consultas.ipynb`
+
+- *Exploración inicial de datos*
+    
+    - Carga los CSV base.
+        
+    - Muestra columnas, conteos y valores nulos por tabla.
+        
+    - Detecta llaves SkId* y relaciones entre tablas.
+- *Matriz de adyacencias (relaciones entre tablas)*
+	
+	- Detecta llaves SkId* y construye grafo de dependencias.
+    
+- *Exporta:*
+    
+    - __edges_detectados.csv (aristas: origen, destino, columna_origen)
+        
+    - __adyacencia_dirigida.csv
+        
+    - __adyacencia_no_dirigida.csv
+        
+- *Dimensiones por tabla*
+    
+    - Calcula número de filas y columnas de cada CSV.
+        
+    - Exporta __table_dimensions.csv.
+        
+- *Valores faltantes*
+    
+    - Calcula porcentaje de nulos por columna.
+        
+    - Exporta resultados individuales y globales en __missing_values/.
+        
+- *EDA automatizado de base de datos relacional multitabla (DataPrep)*- En Construcción
+    
+    - Genera perfiles HTML para cada tabla.
+        
+    - Guarda en _profiles_dataprep/.
+        
+- *Intersecciones de ítems*
+    
+    - Construye matriz Proyecto × Ítem.
+        
+    - Calcula intersecciones y similitudes entre proyectos.
+        
+- *EDA de Empresas y Proyectos*
+    
+    - Analiza estados, clases, tipos y fechas de proyectos.
+        
+    - Resume características de empresas.
+    
+        
+- *Instrumentación y depuración*
+    
+    - Usa mensajes [DEBUG] para seguimiento de proceso.
 
 ---
 
-## 🧹 Política de exclusión (.gitignore)
+### ⚙️ conexionDB.ipynb — Conectividad y exportación SINCO
 
-El archivo `.gitignore` excluye:
-- Todos los `.csv`, `.xls`, `.xlsx`, `.zip`
-- Carpetas locales (`20251003/`, `anteriores/`)
-- Notebooks pesados, logs y archivos temporales
+1. **Configuración de conexión**
+   - Lee credenciales (`SINCO_SERVER`, `SINCO_DB`, `SINCO_USER`, `SINCO_PW`) desde variables de entorno.
+   - Define `DRIVER = "ODBC Driver 18 for SQL Server"`.
+   - Crea `engine` con SQLAlchemy usando conexión ODBC codificada.
+   - Imprime información de entorno: versión de Python, arquitectura y drivers ODBC disponibles.
+
+2. **Gestión de exportaciones**
+   - Crea carpeta automática `export/YYYYMMDD/` según la fecha actual.
+
+3. **Listado de tablas**
+   - `listar_tablas(esquemas=None)` obtiene nombres de tablas desde `INFORMATION_SCHEMA.TABLES`.
+   - Filtra por esquema opcional.
+
+4. **Exportación de datos**
+   - `exportar_tabla(schema, table, chunksize=200_000, to_parquet=False)` guarda cada tabla completa en CSV (o Parquet opcional).
+   - `exportar_todas(esquemas=None, to_parquet=False)` exporta todas las tablas y genera `_resumen_export.csv`.
+
+5. **Llaves y relaciones**
+   - `columnas_y_llaves(esquemas=None)` obtiene tipo de llave (`PK`, `UK`, `FK`) y tabla relacionada.
+   - `columnas_pk_fk(esquemas=None)` resume llaves primarias y foráneas por columna.
+   - `listar_foreign_keys(engine)` usa `sys.*` para listar relaciones hijo–padre.
+
+6. **Descripción de columnas**
+   - `describe_table(engine, schema, table)` devuelve tipo de dato, longitud, nulos y valores por defecto.
+   - `tables_describe(schemas:list)` genera `tableDescriptions.csv` con metadatos completos.
+
+7. **Pruebas y validación**
+   - Carga CSV de ejemplo (`ADP_DTM_DIM.Empresa.csv`, `ADP_DTM_FACT.Programacion.csv`).
+   - Realiza merge de prueba y muestra columnas para verificación.
 
 ---
+
+### 📋 Diccionario de datos API
+
+ El archivo `tableDescriptions.csv` es un diccionario de datos consolidado que documenta la información disponible de estructura  de las tablas ARPRO. Generado automáticamente mediante la función `tables_describe()`
+
+- **schema_name**: Esquema de la tabla (`ADP_DTM_DIM` o `ADP_DTM_FACT`)
+- **table_name**: Nombre de la tabla
+- **COLUMN_NAME**: Nombre de cada columna
+- **DATA_TYPE**: Tipo de dato SQL (varchar, int, bigint, money, etc.)
+- **CHARACTER_MAXIMUM_LENGTH**: Longitud máxima para campos de texto
+- **IS_NULLABLE**: Indica si la columna acepta valores nulos
+- **COLUMN_DEFAULT**: Valor por defecto de la columna
+
+**Cobertura**: 26 tablas dimensionales (DIM) + 24 tablas de hechos (FACT) = 50 tablas documentadas.
+
+---
+
+### `Codigo Tabla final.ipynb` 
+Notebook principal para la construcción de la Tabla vizualización tablero looker. Realiza:
+- Carga de datos desde los CSV en `20251003/` (Proyección, Items, Proyecto, Capítulo Presupuesto, Insumo)
+- Merges secuenciales mediante llaves (`SkIdProyecto`, `SkIdCapitulo`, `SkIdItems`, `SkIdInsumo`)
+- Limpieza de duplicados y prefijado de columnas para evitar colisiones
+- Selección de columnas relevantes para análisis
+- Exportación de resultados a `tabla_looker.csv` y `tabla_looker_final.csv`
+- **Exportación por proyecto**: genera un CSV individual por cada "Nombre Proyecto" en la carpeta `tablasProyect/`, con nombres de archivo saneados (sin acentos, espacios o caracteres especiales)
+
+---
+
+### CODIGOS_YAN
+
+Codigos de yan.
 
 ## 📁 Buenas prácticas
 
@@ -108,11 +245,12 @@ El archivo `.gitignore` excluye:
 
 ---
 
-## 👤 Autor
+### TABLERO EN LOOKER
 
-**Rafael A. Baracaldo D.**  
-📚 Ingeniería Estadística — Escuela Colombiana de Ingeniería  
-🧩 Proyecto 2025: *Estructura relacional de bases ARPRO*
+El tablero en looker en su versión inicial estaba compacto todo en una única pestaña, se evidenció que esto no era óptimo y se desarrollo una versión 2.0 con nuevas pestañas y de una vez se dejo el espacio para la pestaña de regresión. A este tablero falta hacer unos análisis previos de los datos que alimentan el tablero.
+
+V 0.1: https://lookerstudio.google.com/reporting/350a485d-72e9-49f9-9829-c16847ad895b
+V 0.2: https://lookerstudio.google.com/reporting/b86b2ce7-7553-4816-b3bf-11f9ea4a7c14
 
 ---
 
