@@ -16,6 +16,7 @@ Base de Datos ARPRO/
 ├── conexionDB.ipynb                 # Conexión a la base de datos (versión notebook)
 ├── conexionDB.py                    # Conexión a la base de datos (versión script Python)
 ├── consultas.ipynb                  # Análisis de tasas de valores nulos y consultas exploratorias
+├── Concatenador_..._.ipynb          # Herramienta para tener descripción jerárquica concatenada - útil para el homologador
 │
 ├── Modelo APPY SINCO-2025-10-16-160041.svg   # Diagrama SVG del modelo APPY SINCO
 ├── Modelo APPY SINCO-2025-10-16-169000.png   # Imagen PNG del modelo APPY SINCO
