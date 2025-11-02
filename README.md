@@ -41,7 +41,7 @@ Base de Datos ARPRO/
 📚 Ingeniería Estadística — Escuela Colombiana de Ingeniería  
 🧩 Proyecto 2025: *Estructura relacional de bases ARPRO*
 
-**Juan Sebastián Ramírez Ayala**   
+**Juan Sebastián Ramírez Ayala**  
 📚 Ingeniería Estadística — Escuela Colombiana de Ingeniería  
 🧩 Proyecto 2025: *Estructura relacional de bases ARPRO*
 
@@ -49,6 +49,9 @@ Base de Datos ARPRO/
 📚 Ingeniería Estadística — Escuela Colombiana de Ingeniería  
 🧩 Proyecto 2025: *Estructura relacional de bases ARPRO*
 
+**Yan Carlos Guerra Moreno**  
+📚 Ingeniería Estadística — Escuela Colombiana de Ingeniería  
+🧩 Proyecto 2025: *Estructura relacional de bases ARPRO*
 
 ---
 
