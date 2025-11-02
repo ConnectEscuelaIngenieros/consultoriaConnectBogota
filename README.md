@@ -172,7 +172,9 @@ También estan las dependencias implementadas en la extracción de datos mediant
 
 ---
 ###  Flujo codigos Valor Presente
-Conjunto de scripts en R para ajustar valores monetarios históricos de proyectos de construcción a valor presente utilizando el Índice de Precios al Consumidor (IPC) del Banco de la República de Colombia
+Conjunto de scripts en R para ajustar valores monetarios históricos de proyectos de construcción a valor presente utilizando el Índice de Precios al Consumidor (IPC) del Banco de la República de Colombia.
+
+Nota: Los tres scripts realizan la misma función principal (ajuste por inflación), pero fueron evolucionando para adaptarse a diferentes necesidades de entrada de datos y nivel de detalle requerido.
 
 ### ⚙️ conexionDB.ipynb — Conectividad y exportación SINCO
 
