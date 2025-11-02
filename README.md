@@ -252,11 +252,10 @@ Valor Presente/
 
 ### VP-AJUSTADO.R - VERSIÓN FINAL
 
-**Propósito**: Versión definitiva para procesar tabla_looker_final.csv extraída de la base de datos ARPRO con IPC histórico dinámico.
-
+**Propósito**: Versión definitiva para procesar tabla_looker_final.csv extraída de la base de datos ARPRO
 **Entrada**:
-- input/tabla_looker_final.csv - Tabla consolidada con múltiples proyectos
-- IPC_HISTORICOS.xlsx - Serie completa de IPC mensual (1999–2025)
+- tabla_looker_final.csv - Tabla consolidada con múltiples proyectos
+- IPC_HISTORICOS.xlsx - Serie completa de IPC historicos
 
 **Proceso**:
 1. Carga IPC históricos y limpia fechas seriales de Excel
@@ -267,7 +266,7 @@ Valor Presente/
    - Valor Total
    - Insumo Valor Unitario
    - Insumo Valor Neto
-5. Aplica fórmula: VP = Valor Original × (IPC Sep-2025 / IPC Histórico)
+5. Aplica fórmula: VP = Valor Original × (IPC Actual / IPC Histórico)
 
 **Salida**: Excel con 3 hojas
 - Datos Completos VP: Tabla con valores originales, ajustados y diferencias
@@ -276,13 +275,8 @@ Valor Presente/
 
 **IPC Referencia**: 151.48 (Septiembre 2025)
 
-**Ventajas sobre versiones anteriores**:
-- IPC dinámico: Usa el IPC real de la fecha de elaboración de cada proyecto
-- Procesa múltiples proyectos simultáneamente (no uno por uno)
-- 4 columnas monetarias ajustadas (vs 2 en versiones anteriores)
-- Hoja adicional con resumen por proyecto
-- Validación automática: Identifica registros sin IPC disponible
-- Cálculo de rangos IPC y factores de conversión por proyecto
+---
+
 
 ### ⚙️ conexionDB.ipynb — Conectividad y exportación SINCO
 
