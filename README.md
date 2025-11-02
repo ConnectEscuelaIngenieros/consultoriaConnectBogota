@@ -49,10 +49,8 @@ Base de Datos ARPRO/
 📚 Ingeniería Estadística — Escuela Colombiana de Ingeniería  
 🧩 Proyecto 2025: *Estructura relacional de bases ARPRO*
 
-**Yan Carlos Guerra Moreno**
-📚 Ingeniería Estadística — Escuela Colombiana de Ingeniería  
-🧩 Proyecto 2025: *Estructura relacional de bases ARPRO*
 
+---
 
 ## 🗄️ Archivos de datos (excluidos del repositorio)
 
