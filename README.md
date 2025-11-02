@@ -273,7 +273,17 @@ Valor Presente/
 - Resumen Ejecutivo: Estadísticas generales (registros, proyectos, rangos IPC)
 - Resumen Por Proyecto: Totales agregados por proyecto
 
+---
 **IPC Referencia**: 151.48 (Septiembre 2025)
+
+## Fórmula de Valor Presente
+```
+VP = Valor_Original × (IPC_Actual / IPC_Histórico)
+
+Diferencia = VP - Valor_Original
+
+Factor_IPC = IPC_Actual / IPC_Histórico
+```
 
 ---
 
