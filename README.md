@@ -273,6 +273,7 @@ Valor Presente/
 - Resumen Ejecutivo: Estadísticas generales (registros, proyectos, rangos IPC)
 - Resumen Por Proyecto: Totales agregados por proyecto
 
+---
 
 ## Fórmula de Valor Presente
 ```
