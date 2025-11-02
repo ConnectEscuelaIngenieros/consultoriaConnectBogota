@@ -171,7 +171,14 @@ También estan las dependencias implementadas en la extracción de datos mediant
     - Usa mensajes [DEBUG] para seguimiento de proceso.
 
 ---
-### Flujo de codigos - Funcion valor presente
+# Flujo de codigos - Funcion valor presente
+
+Conjunto de scripts en R para ajustar valores monetarios históricos de proyectos de construcción a valor presente utilizando el Índice de Precios al Consumidor (IPC) del Banco de la República de Colombia.
+
+**Nota**: Los tres scripts realizan la misma función principal (ajuste por inflación), pero fueron evolucionando para adaptarse a diferentes necesidades de entrada de datos y nivel de detalle requerido.
+
+---
+
 ## Estructura de carpetas
 ```
 Valor Presente/
@@ -212,7 +219,7 @@ Valor Presente/
 - Presupuesto Completo VP: Solo valores monetarios ajustados (sin cantidades)
 - Resumen Ejecutivo: Metadatos del proyecto y factores IPC
 
-**Interfaz**: Menú interactivo para procesar archivo específico o todos los de input/
+**Interfaz**: Menú interactivo para procesar archivo específico o todos los de input
 
 **Características**:
 - Ajuste inflacionario funcional
@@ -241,18 +248,14 @@ Valor Presente/
 - Presupuesto Completo VP: Incluye cantidades presupuestadas y proyectadas + valores ajustados
 - Resumen Ejecutivo: Metadatos del proyecto y factores IPC
 
-**Interfaz**: Menú interactivo para procesar archivo específico o todos los de input/
-
-**Mejoras respecto a CODIGO.R**:
-- Incluye columnas de cantidad (volúmenes de obra)
-- Análisis más completo con unidades de medida
-- Mantiene IPC fijo (limitación para fechas variables)
+**Interfaz**: Menú interactivo para procesar archivo específico o todos los de input
 
 ---
 
 ### VP-AJUSTADO.R - VERSIÓN FINAL
 
 **Propósito**: Versión definitiva para procesar tabla_looker_final.csv extraída de la base de datos ARPRO
+
 **Entrada**:
 - tabla_looker_final.csv - Tabla consolidada con múltiples proyectos
 - IPC_HISTORICOS.xlsx - Serie completa de IPC historicos
@@ -278,13 +281,9 @@ Valor Presente/
 ## Fórmula de Valor Presente
 ```
 VP = Valor_Original × (IPC_Actual / IPC_Histórico)
-
 Diferencia = VP - Valor_Original
-
 Factor_IPC = IPC_Actual / IPC_Histórico
 ```
-
----
 
 
 ### ⚙️ conexionDB.ipynb — Conectividad y exportación SINCO
