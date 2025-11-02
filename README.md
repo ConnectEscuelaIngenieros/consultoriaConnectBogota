@@ -175,7 +175,6 @@ También estan las dependencias implementadas en la extracción de datos mediant
 Conjunto de scripts en R para ajustar valores monetarios históricos de proyectos de construcción a valor presente utilizando el Índice de Precios al Consumidor (IPC) del Banco de la República de Colombia.
 Nota: Los tres scripts realizan la misma función principal (ajuste por inflación), pero fueron evolucionando para adaptarse a diferentes necesidades de entrada de datos y nivel de detalle requerido.
 
-Estructura de carpetas
 Valor Presente/
 │
 ├── input/                           # Archivos de entrada
@@ -189,8 +188,6 @@ Valor Presente/
 ├── CODIGO.R                         # Versión inicial - Batch Excel simple
 ├── procesar_presupuesto.R           # Versión mejorada - Excel detallado
 └── VP-AJUSTADO.R                    # VERSIÓN FINAL - Tabla Looker con IPC dinámico
-
-
 
 ### ⚙️ conexionDB.ipynb — Conectividad y exportación SINCO
 
