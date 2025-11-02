@@ -172,80 +172,117 @@ También estan las dependencias implementadas en la extracción de datos mediant
 
 ---
 ### Flujo de codigos - Funcion valor presente
-Conjunto de scripts en R para ajustar valores monetarios históricos de proyectos de construcción a valor presente utilizando el Índice de Precios al Consumidor (IPC) del Banco de la República de Colombia.
-Nota: Los tres scripts realizan la misma función principal (ajuste por inflación), pero fueron evolucionando para adaptarse a diferentes necesidades de entrada de datos y nivel de detalle requerido.
+## Estructura de carpetas
+```
+Valor Presente/
+│
+├── input/                           # Archivos de entrada
+│   ├── *.xlsx                       # Presupuestos de proyectos (múltiples archivos)
+│   ├── tabla_looker_final.csv       # Tabla consolidada desde base de datos
+│   └── IPC_HISTORICOS.xlsx          # Serie histórica IPC (Banco República)
+│
+├── output/                          # Resultados procesados
+│   └── *_IPC_BANREP_FINAL.xlsx      # Excel con valores ajustados + análisis
+│
+├── CODIGO.R                         # Versión inicial - Batch Excel simple
+├── procesar_presupuesto.R           # Versión mejorada - Excel detallado
+└── VP-AJUSTADO.R                    # VERSIÓN FINAL - Tabla Looker con IPC dinámico
+```
 
-Evolución de los scripts
-Primero: CODIGO.R — Versión inicial
-Propósito: Primera implementación para procesar archivos individuales de Excel con valores monetarios únicamente.
-Entrada:
-•	input/*.xlsx — Presupuestos individuales en formato específico
-Proceso:
-1.	Lee estructura jerárquica: CAPÍTULO → SUBCAPÍTULO → ÍTEM → INSUMO
-2.	Extrae fecha de referencia de la fila 4 del Excel
-3.	Aplica IPC fijo (Febrero 2023: 130.40 → Septiembre 2025: 151.48)
-4.	Calcula VP para: 
-o	Insumo Presupuestado
-o	Insumo Proyectado
-Salida: Excel con 2 hojas
-•	Presupuesto Completo VP: Solo valores monetarios ajustados (sin cantidades)
-•	Resumen Ejecutivo: Metadatos del proyecto y factores IPC
-Interfaz: Menú interactivo para procesar archivo específico o todos los de input/
-Características:
-•	 Ajuste inflacionario funcional
-•	 Procesamiento batch
-•	Sin columnas de cantidad
-•	 IPC fijo (no considera fecha real de elaboración)
+---
 
-Segundo: procesar_presupuesto.R — Versión mejorada
-Propósito: Mejora de CODIGO.R agregando columnas de cantidad para análisis más completo.
-Entrada:
-•	input/*.xlsx — Presupuestos individuales en formato específico
-Proceso:
-1.	Lee estructura jerárquica: CAPÍTULO → SUBCAPÍTULO → ÍTEM → INSUMO
-2.	Extrae fecha de referencia de la fila 4 del Excel
-3.	Aplica IPC fijo (Febrero 2023: 130.40 → Septiembre 2025: 151.48)
-4.	Calcula VP para: 
-o	Insumo Presupuestado
-o	Insumo Proyectado
-Salida: Excel con 2 hojas
-•	Presupuesto Completo VP: Incluye cantidades presupuestadas y proyectadas + valores ajustados
-•	Resumen Ejecutivo: Metadatos del proyecto y factores IPC
-Interfaz: Menú interactivo para procesar archivo específico o todos los de input/
-Mejoras respecto a CODIGO.R:
-•	Incluye columnas de cantidad (volúmenes de obra)
-•	 Análisis más completo con unidades de medida
-•	Mantiene IPC fijo (limitación para fechas variables)
+## Evolución de los scripts
 
-Tercero: VP-AJUSTADO – VERSION FINAL 
-Propósito: Versión definitiva para procesar tabla_looker_final.csv extraída de la base de datos ARPRO con IPC histórico dinámico.
-Entrada:
-•	input/tabla_looker_final.csv — Tabla consolidada con múltiples proyectos
-•	IPC_HISTORICOS.xlsx — Serie completa de IPC mensual (1999–2025)
-Proceso:
-1.	Carga IPC históricos y limpia fechas seriales de Excel
-2.	Lee tabla Looker con información de proyectos, ítems e insumos
-3.	Extrae fecha de elaboración de cada registro y hace matching automático con IPC correspondiente
-4.	Calcula valor presente para 4 columnas monetarias: 
-o	Valor Unitario
-o	Valor Total
-o	Insumo Valor Unitario
-o	Insumo Valor Neto
-5.	Aplica fórmula: VP = Valor Original × (IPC Sep-2025 / IPC Histórico)
-Salida: Excel con 3 hojas
-•	Datos Completos VP: Tabla con valores originales, ajustados y diferencias
-•	Resumen Ejecutivo: Estadísticas generales (registros, proyectos, rangos IPC)
-•	Resumen Por Proyecto: Totales agregados por proyecto
-IPC Referencia: 151.48 (Septiembre 2025)
-Ventajas sobre versiones anteriores:
-•	IPC dinámico: Usa el IPC real de la fecha de elaboración de cada proyecto
-•	 Procesa múltiples proyectos simultáneamente (no uno por uno)
-•	4 columnas monetarias ajustadas (vs 2 en versiones anteriores)
-•	 Hoja adicional con resumen por proyecto
-•	 Validación automática: Identifica registros sin IPC disponible
-•	Cálculo de rangos IPC y factores de conversión por proyecto
+### CODIGO.R - Versión inicial
 
+**Propósito**: Primera implementación para procesar archivos individuales de Excel con valores monetarios únicamente.
 
+**Entrada**:
+- input/*.xlsx - Presupuestos individuales en formato específico
+
+**Proceso**:
+1. Lee estructura jerárquica: CAPÍTULO → SUBCAPÍTULO → ÍTEM → INSUMO
+2. Extrae fecha de referencia de la fila 4 del Excel
+3. Aplica IPC fijo (Febrero 2023: 130.40 → Septiembre 2025: 151.48)
+4. Calcula VP para:
+   - Insumo Presupuestado
+   - Insumo Proyectado
+
+**Salida**: Excel con 2 hojas
+- Presupuesto Completo VP: Solo valores monetarios ajustados (sin cantidades)
+- Resumen Ejecutivo: Metadatos del proyecto y factores IPC
+
+**Interfaz**: Menú interactivo para procesar archivo específico o todos los de input/
+
+**Características**:
+- Ajuste inflacionario funcional
+- Procesamiento batch
+- Sin columnas de cantidad
+- IPC fijo (no considera fecha real de elaboración)
+
+---
+
+### procesar_presupuesto.R - Versión mejorada
+
+**Propósito**: Mejora de CODIGO.R agregando columnas de cantidad para análisis más completo.
+
+**Entrada**:
+- input/*.xlsx - Presupuestos individuales en formato específico
+
+**Proceso**:
+1. Lee estructura jerárquica: CAPÍTULO → SUBCAPÍTULO → ÍTEM → INSUMO
+2. Extrae fecha de referencia de la fila 4 del Excel
+3. Aplica IPC fijo (Febrero 2023: 130.40 → Septiembre 2025: 151.48)
+4. Calcula VP para:
+   - Insumo Presupuestado
+   - Insumo Proyectado
+
+**Salida**: Excel con 2 hojas
+- Presupuesto Completo VP: Incluye cantidades presupuestadas y proyectadas + valores ajustados
+- Resumen Ejecutivo: Metadatos del proyecto y factores IPC
+
+**Interfaz**: Menú interactivo para procesar archivo específico o todos los de input/
+
+**Mejoras respecto a CODIGO.R**:
+- Incluye columnas de cantidad (volúmenes de obra)
+- Análisis más completo con unidades de medida
+- Mantiene IPC fijo (limitación para fechas variables)
+
+---
+
+### VP-AJUSTADO.R - VERSIÓN FINAL
+
+**Propósito**: Versión definitiva para procesar tabla_looker_final.csv extraída de la base de datos ARPRO con IPC histórico dinámico.
+
+**Entrada**:
+- input/tabla_looker_final.csv - Tabla consolidada con múltiples proyectos
+- IPC_HISTORICOS.xlsx - Serie completa de IPC mensual (1999–2025)
+
+**Proceso**:
+1. Carga IPC históricos y limpia fechas seriales de Excel
+2. Lee tabla Looker con información de proyectos, ítems e insumos
+3. Extrae fecha de elaboración de cada registro y hace matching automático con IPC correspondiente
+4. Calcula valor presente para 4 columnas monetarias:
+   - Valor Unitario
+   - Valor Total
+   - Insumo Valor Unitario
+   - Insumo Valor Neto
+5. Aplica fórmula: VP = Valor Original × (IPC Sep-2025 / IPC Histórico)
+
+**Salida**: Excel con 3 hojas
+- Datos Completos VP: Tabla con valores originales, ajustados y diferencias
+- Resumen Ejecutivo: Estadísticas generales (registros, proyectos, rangos IPC)
+- Resumen Por Proyecto: Totales agregados por proyecto
+
+**IPC Referencia**: 151.48 (Septiembre 2025)
+
+**Ventajas sobre versiones anteriores**:
+- IPC dinámico: Usa el IPC real de la fecha de elaboración de cada proyecto
+- Procesa múltiples proyectos simultáneamente (no uno por uno)
+- 4 columnas monetarias ajustadas (vs 2 en versiones anteriores)
+- Hoja adicional con resumen por proyecto
+- Validación automática: Identifica registros sin IPC disponible
+- Cálculo de rangos IPC y factores de conversión por proyecto
 
 ### ⚙️ conexionDB.ipynb — Conectividad y exportación SINCO
 
