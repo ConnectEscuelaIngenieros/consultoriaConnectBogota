@@ -36,6 +36,8 @@ __pycache__/
 venv/
 env/
 ENV/
+.venvDataProfile/
+.venvEDA/
 
 # --- Editors / OS ---
 .vscode/
@@ -67,3 +69,4 @@ artifacts/**
 # --- Notebooks (optional large) ---
 # Uncomment to ignore large notebooks produced during EDA
 # *.ipynb
+EDA_review/
