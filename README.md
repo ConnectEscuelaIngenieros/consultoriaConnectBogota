@@ -1,7 +1,6 @@
 # 🧱 Exploración de la Base de Datos ARPRO
 
 Este repositorio contiene los scripts, conexiones y notebooks utilizados para analizar la estructura y las relaciones de la **base de datos ARPRO** de proyectos de construcción.
-# cambio de prueba
 ---
 
 ## 📂 Estructura del proyecto
