@@ -1,0 +1,878 @@
+---
+title: "EDA 50 Tablas"
+output: html_notebook
+---
+
+# EDA 2
+
+```{r setUp, message=FALSE, warning=FALSE, include=FALSE}
+library(dplyr)
+library(dlookr)
+```
+
+
+## 1.ADP_DTM_DIM.Actividades
+
+```{r actividades}
+actividades <- read.csv("ADP_DTM_DIM.Actividades.csv")
+
+```
+
+
+### Preguntas
+
+1. Que son las actividades y a que hacen referencia ? 
+2. A que se refiere el orden que mencionan ? 
+
+## 2.ADP_DTM_DIM.Bodega
+
+```{r bodega}
+bodega <- read.csv("ADP_DTM_DIM.Bodega.csv")
+```
+
+
+### Preguntas
+
+1. Que información almacenan en esta tabla ? 
+
+## 3.ADP_DTM_DIM.CapituloPresupuesto
+
+```{r 3CapituloPresupuesto}
+
+CapituloPresupuesto <- read.csv("ADP_DTM_DIM.CapituloPresupuesto.csv")
+```
+
+### Observaciones
+
+#### Capitulo.Numero
+
+1. En la variable `Capitulo.Numero` se presenta una mala integridad referencial dado que admite un formato diferente de lo normal en esta varible, según esta variable se presentan los siguientes.
+
+```{r echo=FALSE}
+unique(CapituloPresupuesto$Capitulo.Numero)
+```
+
+```{r}
+names(CapituloPresupuesto)
+CapituloPresupuesto %>% 
+  group_by(Capitulo.Numero, Capitulo.Descripcion) %>% 
+  summarise(Conteo = n()) %>% 
+  View()
+
+View(CapituloPresupuesto[CapituloPresupuesto$Capitulo.Numero %in% c("01", "01 00 00", "1"), c("Capitulo.Numero", "Capitulo.Descripcion", "Tipo.Costo")])
+
+CapituloPresupuesto %>%
+  filter(grepl("^(?:[0 ]*1?[0 ]*)$", Capitulo.Numero)) %>%
+  select(Capitulo.Numero, Capitulo.Descripcion) %>%
+  distinct() %>% 
+  View()
+
+CapituloPresupuesto %>%
+  filter(grepl("^(?:[0 ]*2?[0 ]*)$", Capitulo.Numero)) %>%
+  select(Capitulo.Numero, Capitulo.Descripcion) %>%
+  distinct() %>% 
+  View()
+
+CapituloPresupuesto %>%
+  filter(grepl("^(?:[0 ]*3?[0 ]*)$", Capitulo.Numero)) %>%
+  select(Capitulo.Numero, Capitulo.Descripcion) %>%
+  distinct() %>% 
+  View()
+
+CapituloPresupuesto %>%
+  filter(grepl("^(?:[0 ]*4?[0 ]*)$", Capitulo.Numero)) %>%
+  select(Capitulo.Numero, Capitulo.Descripcion) %>%
+  distinct() %>% 
+  View()
+
+CapituloPresupuesto %>%
+  filter(grepl("^(?:[0 ]*5?[0 ]*)$", Capitulo.Numero)) %>%
+  select(Capitulo.Numero, Capitulo.Descripcion) %>%
+  distinct() %>% 
+  View()
+
+CapituloPresupuesto %>%
+  filter(grepl("^(?:[0 ]*6?[0 ]*)$", Capitulo.Numero)) %>%
+  select(Capitulo.Numero, Capitulo.Descripcion) %>%
+  distinct() %>% 
+  View()
+
+CapituloPresupuesto %>%
+  filter(grepl("^(?:[0 ]*7?[0 ]*)$", Capitulo.Numero)) %>%
+  select(Capitulo.Numero, Capitulo.Descripcion) %>%
+  distinct() %>% 
+  View()
+
+CapituloPresupuesto %>%
+  filter(grepl("^(?:[0 ]*8?[0 ]*)$", Capitulo.Numero)) %>%
+  select(Capitulo.Numero, Capitulo.Descripcion) %>%
+  distinct() %>% 
+  View()
+
+CapituloPresupuesto %>%
+  filter(grepl("^(?:[0 ]*9?[0 ]*)$", Capitulo.Numero)) %>%
+  select(Capitulo.Numero, Capitulo.Descripcion) %>%
+  distinct() %>% 
+  View()
+
+```
+
+
+> Idea: Limitar solo a lo que este ligado a los proyectos presentes (Solución Rafa)
+
+Toca hacer el merge con proyectos a ver si todos estos quedan alineados.
+
+#### Modelo
+
+Es necesario hacer un corrección de esto para poder realizar las comparaciones.
+
+### Preguntas
+
+1. Los carpitulos pueden tener diferentes nombres ? Dado que es un EDT no debería de tener estos los mismos nombres ? Esto dado que en una primera instancia se observa que dado un número de un capitulo estos puede tener varias descripciones, si esto es de esta forma, no se lograría tener una estandarización y por ende una comparativa. 
+
+2. Los números de capitulos se representan mediante números (redundante) ?, sin embargo, se presenta un nivel el cual es `CI` el cual tiene una descripcion de `Costos Indirectos`.
+
+3. Por qué hay información que no esta ligada a los proyectos presentes ? (Conjetura Rafa)
+
+
+## 4.ADP_DTM_DIM.ControlClaseOrigen
+
+```{r}
+ControlClaseOrigen <- read.csv("ADP_DTM_DIM.ControlClaseOrigen.csv")
+```
+
+### Observaciones
+
+ningna
+
+#### Modelo
+
+No hay informacion apriori util para el modelo
+
+### Preguntas
+
+1. Para que usan esta tabla, que es lo que llevan el control ? 
+2. A que hacen referencia a clase y a origen ? 
+
+## 5.ADP_DTM_DIM.Empresa
+
+No es relevante
+
+## 6.ADP_DTM_DIM.EspecicficacionDePedidos
+
+```{r}
+EspecicficacionDePedidos <- read.csv("ADP_DTM_DIM.EspecicficacionDePedidos.csv")
+```
+
+### Observaciones
+
+#### Modelo 
+
+Dependiendo de la respuesta puede haber info util para el modelo.
+
+### Preguntas 
+
+1. Que tipos de pedidos hace ARPRO, es decir, que servicios ofrece la empresa y a que hacen referencias estos pedidos ?
+
+## 7.ADP_DTM_DIM.EspecificacionDeActas
+
+```{r}
+EspecificacionDeActas = read.csv("ADP_DTM_DIM.EspecificacionDeActas.csv")
+```
+
+### Observaciones
+
+#### Modelo
+
+No hay informacion útil para el modelo 
+
+## 8.ADP_DTM_DIM.EspecificacionDeContratos
+
+```{r}
+EspecificacionDeContratos = read.csv("ADP_DTM_DIM.EspecificacionDeContratos.csv")
+```
+
+### Observaciones
+
+#### Modelo
+
+Puede haber info útil como el `tipo de contrato`
+
+## 9.ADP_DTM_DIM.EspecificacionDeEntradasAlmacen
+
+```{r}
+EspecificacionDeEntradasAlmacen = read.csv("ADP_DTM_DIM.EspecificacionDeEntradasAlmacen.csv")
+```
+
+## Preguntas
+
+1. Que es lo que se almacena en el almacen ? 
+2. Hay diferencia entre almacen y bodega, si no, entonces pq hay dos tablas que almacenana la misma información ? 
+
+
+## 10.ADP_DTM_DIM.EspecificacionEjecucionCliente
+
+```{r}
+EspecificacionEjecucionCliente = read.csv("ADP_DTM_DIM.EspecificacionEjecucionCliente.csv")
+```
+
+### Observaciones
+
+#### Modelo
+
+No hay informacion útil para el modelo 
+
+
+## 11.ADP_DTM_DIM.EstadoEnvioDocumento
+
+```{r}
+EstadoEnvioDocumento = read.csv("ADP_DTM_DIM.EstadoEnvioDocumento.csv")
+
+View(EstadoEnvioDocumento)
+```
+
+### Observaciones
+
+Esta tabla tiene información acerca del estado del envío del documento, util para cruzar llegado el caso.
+
+#### Modelo
+
+No hay informacion útil para el modelo 
+
+## 12.ADP_DTM_DIM.EstadoPorDocumento
+
+```{r}
+EstadoPorDocumento = read.csv("ADP_DTM_DIM.EstadoPorDocumento.csv")
+```
+
+
+### Observaciones
+
+Muestra los estados por documento
+
+```{r}
+unique(EstadoPorDocumento$Descripcion.Estado)
+```
+
+#### Modelo
+
+No hay informacion útil para el modelo en una primera instacia
+
+## 13.ADP_DTM_DIM.Fecha
+
+```{r}
+Fecha <- read.csv("ADP_DTM_DIM.Fecha.csv")
+```
+
+### Observaciones
+
+#### Modelo
+
+En esta tabla esan registradas las fechas de los proyectos ? 
+
+## 14.ADP_DTM_DIM.Insumo
+
+```{r}
+Insumo <- read.csv("ADP_DTM_DIM.Insumo.csv")
+
+
+dim(Insumo)
+```
+
+### Observaciones
+
+- Esta tabla contiene los registros de los insumos de la empresa, contiene `19251` registros los cuales corresponden cada uno a un insumo diferente, por otro lado contiene 24 caracteríscitcas de estos mismos. 
+
+- Esta tabla es de interés de Rafa dado que se presentan las agrupaciones 
+
+```{r}
+names(Insumo)
+Insumo %>% 
+  group_by(Agrupacion.Descripcion) %>% 
+  summarise(Aporte = round((n()/dim(Insumo)[1])*100, 4),
+            Cantidad = n()) %>% 
+  View()
+```
+
+
+- Dado lo anterior una idea para Rafa puede ser que implemente la concatenacion de`Tipo.Descripcion` +  `Agrupacion.Descripcion` + `Insumo.Descripcion` en conjunto a `Capitulo` + `SubCapitulo`
+
+```{r}
+
+Insumo %>%
+  filter(Insumo$Fecha.Modificacion == "") %>% 
+  select(Fecha.Modificacion) 
+
+Insumo %>% 
+  group_by(Fecha.Modificacion) %>% 
+  summarise(Cantidad = n(),
+            Aporte = round(n()/dim(Insumo)[1] * 100, 2))
+
+```
+
+
+- Hay 5,439 insumos los cuales no tienen la fecha modificada, es decir, que el precio es el mismo que a la fecha de creación ? 
+
+#### Modelo
+
+Posibles columnas para el modelo:
+
+- `Tipo`
+
+- `Agrupacion.Descripcion`
+
+- `Insumo.Descripcion`
+
+- `Descripcion.Unidad`
+
+- `Porcentaje.IVA`
+
+- `Fecha.Creacion`
+
+- `Fecha.Modificacion`
+
+
+### Preguntas
+
+1. Que corresponden los `Dias.Reposicion` 
+2. Hay insumos a los cuales no se le aplica el IVA ? 
+3. Que insumos aplica el IVA y cuales estan exentos de IVA ? 
+4. Y que significa para ustedes `valor neto`
+5. Para estos insumos el IVA aplicado es solo del 19% o aplica otro porcentaje.
+6. Los insumos que tienen NA = `""` en la fecha de modificación quiere decir que estos tienen el mismo valor que la fecha de creación ? 
+
+## 15.ADP_DTM_DIM.Items
+
+```{r}
+Items = read.csv("ADP_DTM_DIM.Items.csv")
+
+View(Items)
+```
+
+### Observaciones
+
+```{r}
+length(unique(Items$SubCapitulo))
+
+Items %>% 
+  select(SubCapitulo) %>% 
+  distinct() %>% 
+  View()
+
+Items[Items$SubCapitulo %in% c("|", ""), ] %>% 
+  group_by(SubCapitulo) %>% 
+  summarise(cantidad = n(),
+            Aporte = round((n()/dim(Items)[1])*100, 5))
+
+names(Items)
+```
+
+- Se presentan valores faltantes dado que estos se estan representando con `""`, otra vez se presenta una mala integridad referencial al momento de crear esta tabla. los valores valtantes corresponden al `24.28059%` de la informacion de `subCapitulo`
+
+- En la tabla `Items` hay una cantidad proyectada
+
+#### Modelo
+
+Variables para el modelo
+
+- `SubCapitulo`
+
+- `Item.Descripcion`
+
+- `Cantidad`
+
+- `Cantidad.Proyectada`
+
+- `Entre otras`
+
+### Preguntas
+
+1. La cantidad proyectada de un `Item` como se calcula ? Esto dado que teníamos entendido que los `Items` eran conjuntos de `Insumos` 
+
+2. Que es el `Precio.Venta` de un insumo ? 
+
+3. Que corresponde `Codigo.Cliente` ? (En cual tabla esta la info del cliente ?)
+
+4. A que corresponde la variable `Metro.cuadrado`
+
+## 16.ADP_DTM_DIM.NivelesPresupuesto
+
+```{r}
+NivelesPresupuesto <- read.csv("ADP_DTM_DIM.NivelesPresupuesto.csv")
+```
+
+No hay informacion de esta tabla
+
+
+## 17.ADP_DTM_DIM.OrigenDelDocumento
+
+```{r}
+OrigenDelDocumento <- read.csv("ADP_DTM_DIM.OrigenDelDocumento.csv")
+
+View(OrigenDelDocumento)
+```
+
+Esta tabla contiene los diferentes orígenes del documento en el sistema, especificando si fue generado por solicitud, compra directa, pedido, proveedor sugerido u otras modalidades.
+
+### Observaciones
+
+#### Modelo
+
+No hay informacion útil para el modelo en una primera instancia, sin embargo, puede ser útil para cruzar y entender información auxiliar.
+
+
+## 18.ADP_DTM_DIM.Proyecto
+
+```{r}
+Proyecto <- read.csv("ADP_DTM_DIM.Proyecto.csv")
+```
+
+### Observaciones
+
+```{r}
+View(Proyecto)
+names(Proyecto)
+Proyecto %>% 
+  select(Nombre.Proyecto) %>% 
+  distinct() %>% 
+  View()
+
+names(Proyecto)
+```
+
+- Hay `88` proyectos 
+
+#### Modelo
+
+Variables:
+
+- `Nombre.Proyecto`
+
+- `Estado`
+
+- `Presupuesto.Fijo`
+
+- `Sucursal.Nombre`
+
+- `MacroProyecto`
+
+- `MacroProyecto.Descripcion`
+
+- `VIS`
+
+- `Fecha.De.Elaboracion`
+
+- `Fecha.De.Inicio`
+
+- `Fecha.De.Finalizacion`
+
+- `UnidadAConstruir`
+
+- `CantidadAConstruir`
+
+### Discusión 
+
+Que hacer con las variables
+
+[24] "AreaAConstruir_M2"        
+[25] "AreaConstruidaFinal_M2"   
+[26] "AreaAVender_M2"           
+[27] "Arealote_M2" 
+
+## 19.ADP_DTM_DIM.Tercero
+
+```{r}
+Tercero <- read.csv("ADP_DTM_DIM.Tercero.csv")
+View(Tercero)
+```
+
+### Observaciones
+
+La tabla **`ADP_DTM_DIM.Tercero`** guarda los datos de los terceros, como clientes o proveedores, incluyendo su identificación, contacto, ciudad, actividad económica y condiciones de pago.
+
+#### Modelo
+
+No hay informacion útil para el modelo en una primera instacia
+
+## 20.ADP_DTM_DIM.TipoContrato
+
+```{r}
+TipoContrato <- read.csv("ADP_DTM_DIM.TipoContrato.csv")
+```
+
+### Observaciones
+
+#### Modelo 
+
+**Hipotesis:**De pronto el tipo de contrato puede tener influencia en las variciones de los costos.
+
+## 21.ADP_DTM_DIM.TipoDeDescuento
+
+```{r}
+TipoDeDescuento <- read.csv("ADP_DTM_DIM.TipoDeDescuento.csv")
+View(TipoDeDescuento)
+```
+
+### Observaciones 
+
+La tabla ADP_DTM_DIM.TipoDescuento contiene los diferentes tipos de descuentos que pueden aplicarse en el sistema, como descuentos por menor valor, por salidas o de tipo contable y presupuestal.
+
+#### Modelo 
+
+Apriori no se ven variables para el modelo
+
+
+## 22.ADP_DTM_DIM.TiposPolizas
+
+```{r}
+TiposPolizas <- read.csv("ADP_DTM_DIM.TiposPolizas.csv")
+
+View(TiposPolizas)
+```
+
+### Observaciones 
+
+La tabla **`ADP_DTM_DIM.TipoPoliza`** contiene los distintos tipos de pólizas asociadas a las empresas, como cumplimiento, manejo de anticipo, responsabilidad civil y calidad del servicio, entre otras.
+
+
+#### Modelo 
+
+Apriori no se ven variables para el modelo
+
+## 23.ADP_DTM_DIM.Usuario
+
+```{r}
+Usuario <- read.csv("ADP_DTM_DIM.Usuario.csv")
+```
+
+
+### Observaciones
+
+- Hay inconsistencias en variables como en `Nivel.Acceso`, hay niveles como `Cargo Johana Bayona`
+
+#### Modelo
+
+Apriori no se ven variables para el modelo
+
+## 24.ADP_DTM_DIM.VariablesAdicionalesContratos
+
+
+```{r}
+VariablesAdicionalesContratos <- 
+  read.csv("ADP_DTM_DIM.VariablesAdicionalesContratos.csv")
+```
+
+Tabla de no interés
+
+## 25.ADP_DTM_DIM.VariablesAdicionalesProyecto
+
+```{r}
+VariablesAdicionalesProyecto <- 
+  read.csv("ADP_DTM_DIM.VariablesAdicionalesProyecto.csv")
+```
+
+No hay informacion en esta tabla
+
+## 26.ADP_DTM_DIM.ZonasProyecto
+
+
+```{r}
+ZonasProyecto <- read.csv("ADP_DTM_DIM.ZonasProyecto.csv") 
+
+View(ZonasProyecto)
+```
+
+Solo hay informacion de un solo proyecto 
+
+## 27.ADP_DTM_FACT.Acta
+
+```{r}
+Acta <- read.csv("ADP_DTM_FACT.Acta.csv")
+View(Acta)
+```
+
+### Observaciones
+
+- A pesar de que tengamos disponibilidad de **88** proyectos, únicamente en `Acta` hay 80.
+
+#### Modelo 
+
+En esta tabla se encuentran realcionadas varias variables de diferentes tablas, sin embargo, no se puede verificar aún si la información presente muestra la relacion entre capitulo, subCapitulo, Item, Insumo que necesitamos.
+
+
+### Preguntas
+
+1. La fecha presente `SkIdFecha` es la fecha de registro del acta ? 
+
+2. Esta tabla que información recopila y con que motivo ? 
+
+## 28.ADP_DTM_FACT.ActasDescuentos
+
+### Observaciones
+
+Esta tabla presenta una información similar a la de `Acta`, sin embargo, hasta que no se sepa con claridad el propósito de esta no se puede verificar su utilidad en el modelo.
+
+### Preguntas
+
+1. Hay alguna relación entre las variaciones de presupuestos cuando se tienen descuentos en la compra de `Insumos` y/o `Items` ? 
+
+
+## 29.ADP_DTM_FACT.Anticipo
+
+```{r}
+Anticipo <- read.csv("ADP_DTM_FACT.Anticipo.csv")
+```
+
+### Preguntas
+
+1. Estos anticipos a qu corresponden ? 
+2. Estos anticipos afectan en el valor 
+
+## 30.ADP_DTM_FACT.AuditoriaActas
+
+```{r}
+AuditoriaActas <- read.csv("ADP_DTM_FACT.AuditoriaActas.csv")
+```
+
+### Preguntas
+
+1. Que corresponde esta tabla ? 
+
+## 31.ADP_DTM_FACT.AuditoriaContratos
+
+## 32.ADP_DTM_FACT.AuditoriaEntradasAlmacen
+
+## 33.ADP_DTM_FACT.AuditoriaPedidos
+
+## 34.ADP_DTM_FACT.Compras
+
+```{r}
+Compras <- read.csv("ADP_DTM_FACT.Compras.csv")
+```
+
+### Observaciones
+
+- Hay compras de 72 proyectos en función de items e insumos
+
+#### Modelo 
+
+Estas variables de esta tabla pueden aportar al modelo ? O al daschboard ? 
+
+## 35.ADP_DTM_FACT.Contrato
+
+```{r}
+Contrato <- read.csv("ADP_DTM_FACT.Contrato.csv")
+```
+
+### Observaciones
+
+Esta Tabla tiene varias variables de otras tablas, esta puede brindarnos informacion para el modelo ? El dashboard ? 
+
+#### Modelo 
+
+Puede tener información de interés.
+
+## 36.ADP_DTM_FACT.ContratosPolizas
+
+```{r}
+ContratosPolizas <- read.csv("ADP_DTM_FACT.ContratosPolizas.csv")
+```
+
+### Oservaciones
+
+#### Modelo 
+
+En una primera instancia diría que no, sin embargo, se lo dejo a la experta en seguros.
+
+## 37.ADP_DTM_FACT.ControlProyecto
+
+```{r}
+ControlProyecto <- read.csv("ADP_DTM_FACT.ControlProyecto.csv")
+```
+
+### Observaciones
+
+Esta tabla contiene la informacion del control de los **88** proyectos presentes en la BD, esta tabla podría ser un reemplazo a la de proyecciones. 
+
+#### Modelo 
+
+Tabla prospecto a modelo 
+
+## 38.ADP_DTM_FACT.EjecucionCliente
+
+```{r}
+EjecucionCliente <- read.csv("ADP_DTM_FACT.EjecucionCliente.csv")
+```
+
+### Observaciones
+
+Esta tabla también tiene proyecto, items, capitulo, sin embargo, no se entiende su objetivo.
+
+### Preguntas
+
+1. Que se ejecuta ? 
+
+##39.ADP_DTM_FACT.EjecucionEstandar
+
+```{r}
+EjecucionEstandar <- read.csv("ADP_DTM_FACT.EjecucionEstandar.csv")
+```
+
+### Observaciones
+
+La tabla `ADP_DTM_FACT.EjecucionEstandar` contiene información sobre la ejecución de proyectos, registrando los valores presupuestados, cantidades ejecutadas y estados asociados a cada ítem dentro de una empresa.
+
+Incluye identificadores de empresa, proyecto, capítulo e ítems, además de variables numéricas que reflejan los montos y cantidades ejecutadas, valores unitarios y totales.
+
+## 40.ADP_DTM_FACT.EntradasAlmacen
+
+```{r}
+EntradasAlmacen <- read.csv("ADP_DTM_FACT.EntradasAlmacen.csv")
+```
+
+### Observaciones
+
+Esta tabla contiene la información de la entrada de insumos de una bodega al almacen. 
+
+#### Modelo 
+
+Esto hace variar el presupuesto ? 
+
+### Preguntas 
+
+1. Que hace referencia el almacen ? 
+
+## 41.ADP_DTM_FACT.InventarioResumido
+
+```{r}
+InventarioResumido <- read.csv("ADP_DTM_FACT.InventarioResumido.csv")
+```
+
+### Observaciones 
+
+Esta tabla contiene informacion acerca del inventario
+
+## 42.ADP_DTM_FACT.NotasEnValor
+
+```{r}
+NotasEnValor <- read.csv("ADP_DTM_FACT.NotasEnValor.csv")
+```
+
+## 43.ADP_DTM_FACT.Pedidos
+
+```{r}
+Pedidos <- read.csv("ADP_DTM_FACT.Pedidos.csv")
+```
+
+### Observaciones 
+
+Informacion acerca de los insumos pedidos
+
+## 44.ADP_DTM_FACT.ProductosProveedorZona
+
+No hay información de esta tabla
+
+## 45.ADP_DTM_FACT.Programacion
+
+```{r}
+Programacion <- read.csv("ADP_DTM_FACT.Programacion.csv")
+```
+
+### Observaciones
+
+Esta tabla contuene la programacion de las `Actividades`
+
+#### Modelo 
+
+¿La omisión en la programación de actividades ha generado variaciones o afectaciones en el presupuesto de ARPRO? Cabe aclarar que no se esta afirmando de que haya este inconveniente, es únicamente una hipotesis a revisar.
+
+## 46.ADP_DTM_FACT.Traslados 
+
+
+```{r}
+library(dlookr)
+
+# Cargar el dataset
+traslados <- read.csv("ADP_DTM_FACT.Traslados.csv")
+
+
+```
+
+
+- Hay 24 traslados
+- En estos traslados hubo 373 de insumos 
+- Al parecer se tiene toda la información acerca de las fechas, las cuales fueron 81 fechas, es decir, en 81 momentos.
+- 
+
+### Preguntas
+
+1. Los traslados influyen en los presupuestos ?
+De pronto los traslados no precenciados pueden afectar el presupuesto estimado.
+
+
+2. Que es lo que trasladan ? 
+3. que significa SkIdProyecto.Entrada ? 
+4. Que es SkIdEstadoPorDocumento ? 
+5. Que significa Numero.Traslado
+6. Que significa Numero.Entrada.Traslado
+
+
+## 47.ADP_DTM_FACT.SalidasAlmacen
+
+```{r}
+salidasAlmacen <- read.csv("ADP_DTM_FACT.SalidasAlmacen.csv")
+```
+
+Registra la salida de insumos de un almacen de 67 proyctos
+
+### Preguntas
+
+1. Que almacena el almacen ?
+2. Que sale del almacen, a donde y porque ?
+
+## 48.ADP_DTM_FACT.Reintegro
+
+```{r}
+reintegro <- read.csv("ADP_DTM_FACT.Reintegro.csv")
+
+reintegro[reintegro$Cantidad == 272825, ]
+```
+
+### Preguntas
+
+1. Se estan reintegrando insumos que salieron de la bodega, estos insumos pq regresaron ?
+
+## 49.ADP_DTM_FACT.Proyeccion
+
+```{r}
+proyeccion = read.csv("ADP_DTM_FACT.Proyeccion.csv")
+
+```
+
+
+## 33.ADP_DTM_DIM.Proyecto.
+
+```{r}
+proyecto = read.csv("ADP_DTM_DIM.Proyecto.csv")
+
+proyecto[proyecto$SkIdProyecto == 100210, ]
+```
+
+En el proyecto `Connecta 80` se reintegraron 272825 acero figurado 1/4" a 1" 60000 psi (p) ? Pq ? 
+
+
+### Preguntas
+
+1. Revisar por qué hay 89 registros de proyectos si únicamente teníamos disponibles 76
+
+## 37.ADP_DTM_DIM.Insumo
+
+```{r}
+insumo = read.csv("ADP_DTM_DIM.Insumo.csv")
+
+eda_web_report(insumo) 
+
+insumo[insumo$SkIdInsumo == 100145, ]
+
+1550*272825
+```
