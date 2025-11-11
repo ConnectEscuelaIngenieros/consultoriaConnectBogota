@@ -4,6 +4,8 @@
 *.xls
 *.xlsx
 *.zip
+*.parquet
+
 
 # === Imágenes y reportes ===
 #*.png
