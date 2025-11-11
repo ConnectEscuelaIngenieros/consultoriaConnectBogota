@@ -72,3 +72,5 @@ artifacts/**
 # Uncomment to ignore large notebooks produced during EDA
 # *.ipynb
 EDA_review/
+setUp.py
+app/
