@@ -5,7 +5,7 @@
 *.xlsx
 *.zip
 *.parquet
-
+*.joblib
 
 # === Imágenes y reportes ===
 #*.png
