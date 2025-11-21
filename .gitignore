@@ -20,7 +20,8 @@
 anteriores/
 Files/
 
-
+Valor_Presente_y_procesador\input
+Valor_Presente_y_procesador\output
 # --- Python & Jupyter ---
 __pycache__/
 *.py[cod]
