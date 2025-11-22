@@ -74,3 +74,4 @@ artifacts/**
 EDA_review/
 setUp.py
 app/
+.Rproj.user
