@@ -13,15 +13,22 @@ def convert_file_using_excel(
     input_file_path: str,
     output_file_path: str,
     messages_mode: str = "debug",
+    retry_on_error: bool = True,
 ) -> None:
     if messages_mode == "debug":
         print(f"[DEBUG] Converting: {input_file_path}")
 
     # Excel POR ARCHIVO (más seguro si alguno se cuelga)
     excel_application = win32.Dispatch("Excel.Application")
-    excel_application.Visible = False
-    excel_application.DisplayAlerts = False
-
+    
+    try:
+        excel_application.Visible = False
+        excel_application.DisplayAlerts = False
+    except AttributeError as e:
+        if messages_mode == "debug":
+            print(f"[DEBUG] Warning: Could not set Excel properties: {e}")
+        # Continuar sin configurar propiedades
+    
     try:
         workbook = excel_application.Workbooks.Open(os.path.abspath(input_file_path))
         try:
@@ -30,10 +37,26 @@ def convert_file_using_excel(
                 print(f"[DEBUG] Saved: {output_file_path}")
         finally:
             workbook.Close()
+    except AttributeError as e:
+        # Si falla, intentar con otra instancia limpia de Excel
+        if retry_on_error:
+            if messages_mode == "debug":
+                print(f"[DEBUG] Retrying with clean Excel instance...")
+            try:
+                excel_application.Quit()
+            except:
+                pass
+            # Reintentar sin retry para evitar bucle infinito
+            convert_file_using_excel(input_file_path, output_file_path, messages_mode, retry_on_error=False)
+        else:
+            raise
     finally:
-        excel_application.Quit()
-        if messages_mode == "debug":
-            print("[DEBUG] Excel instance closed")
+        try:
+            excel_application.Quit()
+            if messages_mode == "debug":
+                print("[DEBUG] Excel instance closed")
+        except:
+            pass
 
 
 def convert_all_xls_files_in_folder(messages_mode: str = "debug") -> Dict[str, Any]:

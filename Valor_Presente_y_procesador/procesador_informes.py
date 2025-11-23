@@ -46,6 +46,12 @@ project_dates_file_path = os.path.join(
     "Proyecto_fechas.xlsx"
 )
 
+# Ruta completa al archivo de tipos de edificación (Proyectos Reto 9.xlsx)
+project_types_file_path = os.path.join(
+    base_project_directory,
+    "Proyectos Reto 9.xlsx"
+)
+
 # Carpeta donde están los presupuestos de entrada (input/)
 input_budgets_directory = os.path.join(
     base_project_directory,
@@ -156,6 +162,67 @@ def calcular_vp(serie_valores: pd.Series, ipc_historico: float, ipc_actual: floa
     return serie_valores.apply(convertir)
 
 
+######## FUNCIÓN PARA CARGAR TIPOS DE EDIFICACIÓN ########
+def cargar_tipos_edificacion() -> pd.DataFrame:
+    """
+    Carga el archivo 'Proyectos Reto 9.xlsx' y extrae el código de proyecto
+    desde la columna 'Proyecto' para hacer join posterior.
+    
+    Returns:
+        DataFrame con columnas: Codigo_Proyecto, Tipo_Edificacion
+    """
+    print("\n>>> Cargando Proyectos Reto 9.xlsx...")
+    ruta_tipos = project_types_file_path
+    
+    if not os.path.exists(ruta_tipos):
+        print(f"⚠️ ADVERTENCIA: No se encontró el archivo {ruta_tipos}")
+        print("   Se omitirá la columna Tipo_Edificacion")
+        return pd.DataFrame(columns=["Codigo_Proyecto", "Tipo_Edificacion"])
+    
+    try:
+        # Leer archivo
+        tipos_raw = pd.read_excel(ruta_tipos, sheet_name=0)
+        
+        # Verificar columnas requeridas
+        if "Proyecto" not in tipos_raw.columns or "Tipo de proyecto" not in tipos_raw.columns:
+            print(f"⚠️ ADVERTENCIA: Columnas requeridas no encontradas en {ruta_tipos}")
+            print(f"   Columnas disponibles: {list(tipos_raw.columns)}")
+            return pd.DataFrame(columns=["Codigo_Proyecto", "Tipo_Edificacion"])
+        
+        # Extraer código de proyecto desde la columna 'Proyecto'
+        def extraer_codigo_de_nombre(nombre_proyecto):
+            """Extrae código del formato '240 - La Arboleda - Etapa 1' -> '240'"""
+            if pd.isna(nombre_proyecto):
+                return None
+            texto = str(nombre_proyecto).strip()
+            match = re.match(r"^(\d+)", texto)
+            if match:
+                return match.group(1)
+            return None
+        
+        tipos_raw["Codigo_Proyecto"] = tipos_raw["Proyecto"].apply(extraer_codigo_de_nombre)
+        
+        # Renombrar y seleccionar columnas
+        tipos_clean = tipos_raw[["Codigo_Proyecto", "Tipo de proyecto"]].copy()
+        tipos_clean.columns = ["Codigo_Proyecto", "Tipo_Edificacion"]
+        
+        # Eliminar duplicados y valores nulos
+        tipos_clean = tipos_clean.dropna(subset=["Codigo_Proyecto"]).drop_duplicates(subset=["Codigo_Proyecto"])
+        
+        # Convertir código a string para consistencia
+        tipos_clean["Codigo_Proyecto"] = tipos_clean["Codigo_Proyecto"].astype(str).str.strip()
+        
+        print(f"Tipos de edificación cargados: {len(tipos_clean)} proyectos")
+        print(f"[DEBUG] Primeros registros:")
+        print(tipos_clean.head())
+        
+        return tipos_clean
+        
+    except Exception as e:
+        print(f"⚠️ ERROR al cargar tipos de edificación: {e}")
+        return pd.DataFrame(columns=["Codigo_Proyecto", "Tipo_Edificacion"])
+
+
 ######## FUNCIÓN PARA EXTRAER CÓDIGO DEL PROYECTO ########
 def extraer_codigo_proyecto(nombre_archivo: str) -> str:
     base = os.path.basename(nombre_archivo)
@@ -231,6 +298,7 @@ def procesar_presupuesto(
     nombre_archivo_presupuesto: str,
     ipc_data: Dict[str, Any],
     datos_fechas: pd.DataFrame,
+    datos_tipos_edificacion: pd.DataFrame = None,
 ) -> Dict[str, Any]:
     print("\n" + "=" * 80)
     print(f"PROCESANDO: {nombre_archivo_presupuesto}")
@@ -285,6 +353,8 @@ def procesar_presupuesto(
 
     print("[DEBUG] Limpiando columnas monetarias...")
     for columna in [
+        "Presup_Valor", "Proy_Valor", "Comprado_Valor", "Asegurado_Valor", 
+        "Invertido_Valor", "Consumido_Valor", "PorConsumir_Valor",
         "Presup_Insumo", "Presup_Item", "Presup_Capitulo",
         "Proy_Insumo", "Proy_Item", "Proy_Capitulo",
     ]:
@@ -377,6 +447,13 @@ def procesar_presupuesto(
             Macroproyecto=macroproyecto,
             IPC_Historico=ipc_historico,
             Factor_IPC=factor_ipc,
+            Presup_Valor_VP=calcular_vp(datos["Presup_Valor"], ipc_historico, ipc_data["ipc_actual"]),
+            Proy_Valor_VP=calcular_vp(datos["Proy_Valor"], ipc_historico, ipc_data["ipc_actual"]),
+            Comprado_Valor_VP=calcular_vp(datos["Comprado_Valor"], ipc_historico, ipc_data["ipc_actual"]),
+            Asegurado_Valor_VP=calcular_vp(datos["Asegurado_Valor"], ipc_historico, ipc_data["ipc_actual"]),
+            Invertido_Valor_VP=calcular_vp(datos["Invertido_Valor"], ipc_historico, ipc_data["ipc_actual"]),
+            Consumido_Valor_VP=calcular_vp(datos["Consumido_Valor"], ipc_historico, ipc_data["ipc_actual"]),
+            PorConsumir_Valor_VP=calcular_vp(datos["PorConsumir_Valor"], ipc_historico, ipc_data["ipc_actual"]),
             Presup_Insumo_VP=calcular_vp(datos["Presup_Insumo"], ipc_historico, ipc_data["ipc_actual"]),
             Presup_Item_VP=calcular_vp(datos["Presup_Item"], ipc_historico, ipc_data["ipc_actual"]),
             Presup_Capitulo_VP=calcular_vp(datos["Presup_Capitulo"], ipc_historico, ipc_data["ipc_actual"]),
@@ -388,6 +465,13 @@ def procesar_presupuesto(
     else:
         print("\n⚠️ No se aplicó conversión a VP (usando valores originales)")
         datos = datos.assign(
+            Presup_Valor_VP=datos["Presup_Valor"],
+            Proy_Valor_VP=datos["Proy_Valor"],
+            Comprado_Valor_VP=datos["Comprado_Valor"],
+            Asegurado_Valor_VP=datos["Asegurado_Valor"],
+            Invertido_Valor_VP=datos["Invertido_Valor"],
+            Consumido_Valor_VP=datos["Consumido_Valor"],
+            PorConsumir_Valor_VP=datos["PorConsumir_Valor"],
             Presup_Insumo_VP=datos["Presup_Insumo"],
             Presup_Item_VP=datos["Presup_Item"],
             Presup_Capitulo_VP=datos["Presup_Capitulo"],
@@ -456,18 +540,64 @@ def procesar_presupuesto(
 
     print("[DEBUG] Asignando metadatos de proyecto a cada fila...")
 
+    # Función auxiliar para extraer año, mes, día de fechas
+    def extraer_fecha_componentes(fecha_valor):
+        """Retorna (año, mes, día) como enteros o (None, None, None) si la fecha es inválida."""
+        if pd.isna(fecha_valor):
+            return None, None, None
+        try:
+            if isinstance(fecha_valor, pd.Timestamp):
+                dt = fecha_valor
+            elif isinstance(fecha_valor, date):
+                dt = pd.Timestamp(fecha_valor)
+            else:
+                dt = pd.to_datetime(fecha_valor)
+            return int(dt.year), int(dt.month), int(dt.day)
+        except:
+            return None, None, None
+
+    # Extraer componentes de cada fecha
+    elab_año, elab_mes, elab_dia = extraer_fecha_componentes(fecha_elaboracion)
+    inicio_año, inicio_mes, inicio_dia = extraer_fecha_componentes(fecha_inicio)
+    fin_año, fin_mes, fin_dia = extraer_fecha_componentes(fecha_finalizacion)
+
+    # Buscar tipo de edificación
+    tipo_edificacion = None
+    if datos_tipos_edificacion is not None and not datos_tipos_edificacion.empty:
+        codigo_str_busqueda = str(codigo_proyecto).strip()
+        tipo_match = datos_tipos_edificacion[
+            datos_tipos_edificacion["Codigo_Proyecto"] == codigo_str_busqueda
+        ]
+        if not tipo_match.empty:
+            tipo_edificacion = tipo_match.iloc[0]["Tipo_Edificacion"]
+            print(f"[DEBUG] Tipo de edificación encontrado: {tipo_edificacion}")
+        else:
+            print(f"[DEBUG] No se encontró tipo de edificación para código {codigo_proyecto}")
+    
     datos = datos.assign(
         Nombre_Proyecto=nombre_proyecto,
         Codigo_Proyecto=codigo_proyecto,
         Macroproyecto=macroproyecto,
         Estado_Proyecto="" if pd.isna(estado) else str(estado),
+        Tipo_Edificacion=tipo_edificacion if tipo_edificacion else "No especificado",
         Fecha_De_Elaboracion=fecha_elaboracion,
+        Elaboracion_Año=elab_año,
+        Elaboracion_Mes=elab_mes,
+        Elaboracion_Dia=elab_dia,
         Fecha_De_Inicio=fecha_inicio,
+        Inicio_Año=inicio_año,
+        Inicio_Mes=inicio_mes,
+        Inicio_Dia=inicio_dia,
         Fecha_De_Finalizacion=fecha_finalizacion,
+        Finalizacion_Año=fin_año,
+        Finalizacion_Mes=fin_mes,
+        Finalizacion_Dia=fin_dia,
     )
 
-    print("[DEBUG] Metadatos de proyecto replicados en todas las filas")
-
+    print("[DEBUG] Metadatos de proyecto replicados en todas las filas (con componentes de fecha y tipo de edificación)")
+    # Completar valores de capítulo en VP tomando el valor directo
+    datos.loc[datos["Tipo_Fila"] == "CAPITULO", "Presup_Capitulo_VP"] = datos.loc[datos["Tipo_Fila"] == "CAPITULO", "Presup_Valor_VP"]
+    datos.loc[datos["Tipo_Fila"] == "CAPITULO", "Proy_Capitulo_VP"] = datos.loc[datos["Tipo_Fila"] == "CAPITULO", "Proy_Valor_VP"]
 
     # --- Calcular totales en VP ---
     print("\n>>> Calculando totales en Valor Presente...")
@@ -621,6 +751,9 @@ def procesar_todos_presupuestos(modo_mensajes: str = "debug") -> Dict[str, Any]:
     datos_fechas = pd.read_excel(project_dates_file_path, sheet_name=0)
     print(f"Proyecto_fechas cargado: {len(datos_fechas)} proyectos")
 
+    # Cargar tipos de edificación
+    datos_tipos_edificacion = cargar_tipos_edificacion()
+
     print("\n>>> Buscando archivos de presupuesto en carpeta input...")
 
     archivos = [
@@ -652,9 +785,9 @@ def procesar_todos_presupuestos(modo_mensajes: str = "debug") -> Dict[str, Any]:
             if mostrar_solo_capitulos:
                 buffer_salida = io.StringIO()
                 with redirect_stdout(buffer_salida):
-                    resultado = procesar_presupuesto(nombre_archivo, ipc_data, datos_fechas)
+                    resultado = procesar_presupuesto(nombre_archivo, ipc_data, datos_fechas, datos_tipos_edificacion)
             else:
-                resultado = procesar_presupuesto(nombre_archivo, ipc_data, datos_fechas)
+                resultado = procesar_presupuesto(nombre_archivo, ipc_data, datos_fechas, datos_tipos_edificacion)
 
             # Usamos el DataFrame completo de detalle para el consolidado
             lista_consolidados.append(resultado["detalle"])
@@ -770,7 +903,20 @@ def procesar_todos_presupuestos(modo_mensajes: str = "debug") -> Dict[str, Any]:
     nombre_consolidado = f"CONSOLIDADO_VARIACION_PROMEDIO_VP_{fecha_actual}.xlsx"
     ruta_consolidado = os.path.join(output_reports_directory, nombre_consolidado)
 
-    # guardar_excel_consolidado(consolidado, ruta_consolidado)
+    # Normalización de columnas numéricas para evitar que Excel altere cifras al importar CSV
+    columnas_posibles_numeros = [c for c in consolidado.columns if re.search(r"(Valor$|Valor_VP$|Insumo$|Insumo_VP$|Item$|Item_VP$|Capitulo$|Capitulo_VP$)", c)]
+    for c in columnas_posibles_numeros:
+        if c in consolidado.columns and pd.api.types.is_float_dtype(consolidado[c]):
+            serie = consolidado[c]
+            # Si todos los valores no nulos son enteros (x == int(x)), casteamos a Int64 para quitar .0
+            if serie.dropna().apply(lambda x: float(x).is_integer()).all():
+                try:
+                    consolidado[c] = serie.astype('Int64')
+                except Exception:
+                    pass
+
+    # Guardar también en XLSX para preservar formato sin problemas locales de separadores
+    guardar_excel_consolidado(consolidado, ruta_consolidado)
 
     print("\n✅ Excel consolidado generado")
     print(f"Archivo: {ruta_consolidado}")
@@ -789,6 +935,17 @@ def procesar_todos_presupuestos(modo_mensajes: str = "debug") -> Dict[str, Any]:
 
 import tkinter as tk
 from tkinter import ttk
+
+def safe_save_csv(df: pd.DataFrame, ruta_destino: str) -> str:
+    try:
+        df.to_csv(ruta_destino, index=False, encoding="utf-8-sig")
+        return ruta_destino
+    except PermissionError:
+        base, ext = os.path.splitext(ruta_destino)
+        alterno = f"{base}_ALT_{date.today().strftime('%Y%m%d_%H%M%S')}{ext}"
+        df.to_csv(alterno, index=False, encoding="utf-8-sig")
+        print(f"[ADVERTENCIA] Permission denied al escribir {ruta_destino}. Guardado como {alterno}")
+        return alterno
 
 def mostrar_dataframe_en_ventana(data_frame, window_title="Vista de datos"):
     print("[DEBUG] Abriendo ventana de visualización de DataFrame...")
@@ -887,27 +1044,24 @@ def menu_principal():
 
     if opcion == "1":
         try:
-            resultado = procesar_presupuesto("184 - Seguimiento Insumos.xlsx", cargar_ipc_historicos(), pd.read_excel(project_dates_file_path))
+            ipc_data = cargar_ipc_historicos()
+            datos_fechas = pd.read_excel(project_dates_file_path)
+            datos_tipos = cargar_tipos_edificacion()
+            
+            resultado = procesar_presupuesto(
+                "184 - Seguimiento Insumos.xlsx",
+                ipc_data=ipc_data,
+                datos_fechas=datos_fechas,
+                datos_tipos_edificacion=datos_tipos,
+            )
+            
             if resultado:
-                resultado = procesar_presupuesto(
-                    "184 - Seguimiento Insumos.xlsx",
-                    ipc_data=cargar_ipc_historicos(),
-                    datos_fechas=pd.read_excel(project_dates_file_path),
-                )
 
                 if not os.path.exists(output_reports_directory):
                     os.makedirs(output_reports_directory, exist_ok=True)
 
-                resultado["resumen"].to_csv(
-                    os.path.join(output_reports_directory, "resumen.csv"),
-                    index=False,
-                    encoding="utf-8-sig",
-                )
-                resultado["detalle"].to_csv(
-                    os.path.join(output_reports_directory, "detalle.csv"),
-                    index=False,
-                    encoding="utf-8-sig",
-                )
+                safe_save_csv(resultado["resumen"], os.path.join(output_reports_directory, "resumen.csv"))
+                safe_save_csv(resultado["detalle"], os.path.join(output_reports_directory, "detalle.csv"))
                 print("\n✅ PROCESO COMPLETADO EXITOSAMENTE")
                             
         except Exception as e:
