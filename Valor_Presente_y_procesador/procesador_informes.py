@@ -892,6 +892,7 @@ def procesar_todos_presupuestos(modo_mensajes: str = "debug") -> Dict[str, Any]:
         consolidado.drop(columns=["codigo_candidato"], inplace=True)
 
         print("[DEBUG] Columna 'capitulo_homologado' añadida desde candidatos_grupo.csv")
+    
     else:
         print(f"[DEBUG] No se encontró archivo de candidatos: {ruta_candidatos}. Se omite merge.")
 
